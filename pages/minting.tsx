@@ -90,15 +90,15 @@ const Minting: NextPage = () => {
 
   useEffect(() => {
     if (account != "") {
-      // 1초 마다 갱신
+      // 0.1초 마다 갱신
       setInterval(() => {
-        const fetchTotalNum = async () => {
+        const fetchCurrentBlock = async () => {
           const block = await mintNFTContract?.methods
             .viewCurrentBlockHeight()
             .call();
             setCurrentBlock(block);
         }
-        fetchTotalNum();
+        fetchCurrentBlock();
       }, 100);
     } else {
     }

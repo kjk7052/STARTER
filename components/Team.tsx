@@ -7,21 +7,21 @@ import TeamCard from "./TeamCard";
 const teamCardConfig = [
   {
     name: "정빛나",
-    position: "Product Manager",
+    position: "Graphic Design",
     image: "team/정빛나님.png",
     color: "blue",
     animation: "tada",
   },
   {
     name: "한승종",
-    position: "Frontend",
+    position: "Product Manager",
     image: "team/한승종님.png",
     color: "yellow",
     animation: "tada",
   },
   {
     name: "김중건",
-    position: "Graphic Design",
+    position: "Smart Contract",
     image: "team/김중건님.png",
     color: "green",
     animation: "tada",
@@ -42,7 +42,7 @@ const teamCardConfig = [
   },
   {
     name: "김백승",
-    position: "Graphic Design",
+    position: "Frontend",
     image: "team/김백승님.png",
     color: "green",
     animation: "tada",
