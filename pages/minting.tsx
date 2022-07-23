@@ -20,11 +20,15 @@ const Minting: NextPage = () => {
   const [nftMaxCapacity, setNFTMaxCapacity] = useState<number>(0);
   const [nftCurrentCapacity, setNFTCurrentCapacity] = useState<number>(0);
   const [nftPrice, setNFTPrice] = useState<number>(0);
+  const [mintAmount, setMintAmount] = useState<number>(1);
   const [mintStatus, setMintStatus] = useState<string>("");
 
   const { caver, mintNFTContract } = useCaver();
 
   const { colorMode } = useColorMode();
+
+  const MAX_MINT_AMOUNT = 10;
+
 
   const onClickKaikas = async () => {
     try {
@@ -107,6 +111,7 @@ const Minting: NextPage = () => {
       //   value: caver?.utils.convertToPeb(2, "KLAY"),
       //   gas: 3000000,
       // });
+      if(mintAmount < 1) return;
 
       setIsLoading(true);
 
@@ -114,9 +119,9 @@ const Minting: NextPage = () => {
         type: "SMART_CONTRACT_EXECUTION",
         from: account,
         to: MINT_NFT_ADDRESS,
-        value: caver.utils.convertToPeb(1, "KLAY"),
+        value: caver.utils.convertToPeb(nftPrice * mintAmount, "KLAY"),
         gas: 3000000,
-        data: mintNFTContract?.methods.batchMintNFT(1).encodeABI(),
+        data: mintNFTContract?.methods.batchMintNFT(mintAmount).encodeABI(),
       });
 
       if (response?.status) {
@@ -145,7 +150,35 @@ const Minting: NextPage = () => {
         }
       }
 
-      const blockNumber = await mintNFTContract?.methods.viewCurrentBlockNumber().call();
+      // const blockNumber = await mintNFTContract?.methods.viewCurrentBlockNumber().call();
+
+      setIsLoading(false);
+    } catch (error) {
+      console.error(error);
+
+      setIsLoading(false);
+    }
+  };
+  
+  const onClickSub = async () => {
+    try {
+      setIsLoading(true);
+
+      if(mintAmount > 0) setMintAmount(mintAmount-1);
+
+      setIsLoading(false);
+    } catch (error) {
+      console.error(error);
+
+      setIsLoading(false);
+    }
+  };
+  
+  const onClickAdd = async () => {
+    try {
+      setIsLoading(true);
+
+      if(mintAmount < MAX_MINT_AMOUNT) setMintAmount(mintAmount+1);
 
       setIsLoading(false);
     } catch (error) {
@@ -219,6 +252,25 @@ const Minting: NextPage = () => {
           <Text>민팅된 수량 : {nftCurrentCapacity}</Text>
           <Text>민팅 가격: {nftPrice} Klay</Text>
           <Text>현재 상태 : {mintStatus}</Text>
+          <Flex ml={8} direction="row" minH={12} minW={300} alignItems="center">
+            <Button
+              size="lg"
+              colorScheme="blue"
+              onClick={onClickSub}
+              loadingText=""
+            >
+              ◀
+            </Button>
+            <Text minW={140} textAlign="center">{mintAmount}</Text>
+            <Button
+              size="lg"
+              colorScheme="blue"
+              onClick={onClickAdd}
+              loadingText=""
+            >
+              ▶
+            </Button>
+          </Flex>
           <Button
             size="lg"
             colorScheme="green"
