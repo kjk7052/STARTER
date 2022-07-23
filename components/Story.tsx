@@ -93,21 +93,21 @@ const Story: FC = () => {
           {storyConfig.map((v, i) => {
             return (
               // 1안
-              // <Box key={i} mt={v.mt}>
-              //   {
-              //     v.description.map((_story, _i)=>{return(
-              //       <Text key={_i}>{t(_story)}</Text>
-              //     )})
-              //   }
-              // </Box>
+              <Box key={i} mt={v.mt}>
+                {
+                  v.description.map((_story, _i)=>{return(
+                    <Text key={_i}>{t(_story)}</Text>
+                  )})
+                }
+              </Box>
               // 2안
-              <>
-              {
-                v.description.map((_story, _i)=>{return(
-                  <Text key={_i}>{t(_story)}</Text>
-                )})
-              }
-              </>
+              // <>
+              // {
+              //   v.description.map((_story, _i)=>{return(
+              //     <Text key={_i}>{t(_story)}</Text>
+              //   )})
+              // }
+              // </>
             );
           })}
         </Box>
