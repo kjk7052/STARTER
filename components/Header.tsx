@@ -28,7 +28,6 @@ const Header: FC = () => {
       justifyContent="space-between"
       alignItems="center"
       px={8}
-      shadow="md"
       zIndex={1}
       flexDir={["column", "column", "row"]}
     >

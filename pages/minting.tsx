@@ -12,6 +12,15 @@ const Minting: NextPage = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [newNFT, setNewNFT] = useState<any>(undefined);
 
+  const [startBlockHeight, setStartBlock] = useState<number>(99999999);
+  const [endBlockHeight, setEndBlock] = useState<number>(99999999);
+  const [currentBlockHeight, setCurrentBlock] = useState<number>(0);
+  
+  const [nftMaxCapacity, setNFTMaxCapacity] = useState<number>(0);
+  const [nftCurrentCapacity, setNFTCurrentCapacity] = useState<number>(0);
+  const [nftPrice, setNFTPrice] = useState<number>(0);
+  const [mintStatus, setMintStatus] = useState<string>("");
+
   const { caver, mintNFTContract } = useCaver();
 
   const { colorMode } = useColorMode();
@@ -19,8 +28,39 @@ const Minting: NextPage = () => {
   const onClickKaikas = async () => {
     try {
       const accounts = await window.klaytn.enable();
-
       setAccount(accounts[0]);
+
+      ///////////////////////////////////////////////////////
+      const block1 = await mintNFTContract?.methods
+        .viewMintStartBlockHeight()
+        .call();
+      setStartBlock(block1);
+      const block2 = await mintNFTContract?.methods
+        .viewMintEndBlockHeight()
+        .call();
+      setEndBlock(block2);
+      const block3 = await mintNFTContract?.methods
+        .viewCurrentBlockHeight()
+        .call();
+      setCurrentBlock(block3);
+
+      const num = await mintNFTContract?.methods
+        .viewMaxCapacity()
+        .call();
+      setNFTMaxCapacity(num);
+      const num1 = await mintNFTContract?.methods
+        .totalSupply()
+        .call();
+      setNFTCurrentCapacity(num1);
+      const num2 = await mintNFTContract?.methods
+        .viewPrice()
+        .call();
+      setNFTPrice(num2);
+      const txt = await mintNFTContract?.methods
+        .viewCurrentStage()
+        .call();
+      setMintStatus(txt);
+      ///////////////////////////////////////////////////////
     } catch (error) {
       console.error(error);
     }
@@ -40,8 +80,9 @@ const Minting: NextPage = () => {
         type: "SMART_CONTRACT_EXECUTION",
         from: account,
         to: MINT_NFT_ADDRESS,
+        value: caver.utils.convertToPeb(1, "KLAY"),
         gas: 3000000,
-        data: mintNFTContract?.methods.mintNFT().encodeABI(),
+        data: mintNFTContract?.methods.batchMintNFT(1).encodeABI(),
       });
 
       if (response?.status) {
@@ -69,6 +110,8 @@ const Minting: NextPage = () => {
           }
         }
       }
+
+      const blockNumber = await mintNFTContract?.methods.viewCurrentBlockNumber().call();
 
       setIsLoading(false);
     } catch (error) {
@@ -135,7 +178,13 @@ const Minting: NextPage = () => {
           )}
         </Flex>
         <Flex ml={8} direction="column" minH={512} minW={300}>
-          <Text>Price : 0 Klay</Text>
+          <Text>민팅 시작 블록 : {startBlockHeight}</Text>
+          <Text>현재 블록 높이 : {currentBlockHeight}</Text>
+          <Text>민팅 종료 블록 : {endBlockHeight}</Text>
+          <Text>민팅 가능 수량 : {nftMaxCapacity}</Text>
+          <Text>민팅된 수량 : {nftCurrentCapacity}</Text>
+          <Text>민팅 가격: {nftPrice} Klay</Text>
+          <Text>현재 상태 : {mintStatus}</Text>
           <Button
             size="lg"
             colorScheme="green"
