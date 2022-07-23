@@ -15,7 +15,7 @@ const teamCardConfig = [
   {
     name: "한승종",
     position: "Frontend",
-    image: "team2.png",
+    image: "team/한승종님.png",
     color: "yellow",
     animation: "tada",
   },
@@ -29,7 +29,7 @@ const teamCardConfig = [
   {
     name: "이영기",
     position: "Smart Contract",
-    image: "team4.png",
+    image: "team/이영기님.png",
     color: "red",
     animation: "tada",
   },
