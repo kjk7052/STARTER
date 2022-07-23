@@ -84,6 +84,22 @@ const Minting: NextPage = () => {
     }
   }, [nftCurrentCapacity])
 
+  useEffect(() => {
+    if (account != "") {
+      // 1초 마다 갱신
+      setInterval(() => {
+        const fetchTotalNum = async () => {
+          const block = await mintNFTContract?.methods
+            .viewCurrentBlockHeight()
+            .call();
+            setCurrentBlock(block);
+        }
+        fetchTotalNum();
+      }, 100);
+    } else {
+    }
+  }, [currentBlockHeight])
+
   const onClickMint = async () => {
     try {
       // const response = await mintNFTContract?.methods.mintNFT().send({
