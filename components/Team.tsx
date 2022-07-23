@@ -8,7 +8,7 @@ const teamCardConfig = [
   {
     name: "정빛나",
     position: "Product Manager",
-    image: "team1.png",
+    image: "team/정빛나님.png",
     color: "blue",
     animation: "tada",
   },
@@ -22,7 +22,7 @@ const teamCardConfig = [
   {
     name: "김중건",
     position: "Graphic Design",
-    image: "team3.png",
+    image: "team/김중건님.png",
     color: "green",
     animation: "tada",
   },
@@ -36,14 +36,14 @@ const teamCardConfig = [
   {
     name: "권오정",
     position: "Frontend",
-    image: "team2.png",
+    image: "team/권오정님.png",
     color: "yellow",
     animation: "tada",
   },
   {
     name: "김백승",
     position: "Graphic Design",
-    image: "team3.png",
+    image: "team/김백승님.png",
     color: "green",
     animation: "tada",
   },
