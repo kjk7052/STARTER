@@ -5,6 +5,7 @@ import { useCaver } from "hooks";
 import { NextPage } from "next";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { useEffect } from "react";
 import { useState } from "react";
 
 const Minting: NextPage = () => {
@@ -61,10 +62,27 @@ const Minting: NextPage = () => {
         .call();
       setMintStatus(txt);
       ///////////////////////////////////////////////////////
+
     } catch (error) {
       console.error(error);
     }
   };
+
+  useEffect(() => {
+    if (account != "") {
+      // 1초 마다 갱신
+      setInterval(() => {
+        const fetchTotalNum = async () => {
+          const num1 = await mintNFTContract?.methods
+            .totalSupply()
+            .call();
+          setNFTCurrentCapacity(num1);
+        }
+        fetchTotalNum();
+      }, 1000);
+    } else {
+    }
+  }, [nftCurrentCapacity])
 
   const onClickMint = async () => {
     try {
