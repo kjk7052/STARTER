@@ -61,6 +61,14 @@ const roadmapCardConfig = [
     color: "yellow",
     colorDark: "purple",
   },
+  {
+    justifyContent: "end",
+    animation: "slideInRight",
+    title: "roadmapTitle8",
+    description: "roadmap8",
+    color: "yellow",
+    colorDark: "purple",
+  },
 ];
 
 const Roadmap: FC = () => {
@@ -80,7 +88,7 @@ const Roadmap: FC = () => {
       {roadmapCardConfig.map((v, i) => {
         return (
           <RoadmapCard
-            key={i}
+            key={"roadmap_"+i}
             justifyContent={v.justifyContent}
             animation={v.animation}
             title={t(v.title)}

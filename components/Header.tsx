@@ -7,11 +7,11 @@ import { FaDiscord, FaInstagram } from "react-icons/fa";
 import { IoMoon, IoSunny } from "react-icons/io5";
 
 // @ 로고 이미지는 public/images를 교체하시면 됩니다. URL은 우리 프로젝트의 URL을 작성하시면 됩니다.
-const logoImage = "logo_black.png";
-const logoImageDark = "logo_white.png";
-const openseaURL = "https://testnets.opensea.io/collection/projectlion-nft";
-const discordURL = "https://discord.gg/JV4whBWNPs";
-const instagramURL = "https://www.instagram.com/projectlion.io/";
+const logoImage = "dollgrock_logo_blue.png";
+const logoImageDark = "dollgrock_logo_yellow.png";
+const openseaURL = "https://testnets.opensea.io/collection/test-nhkxjzobiz";
+const discordURL = "https://discord.gg/6KRWeSdh";
+// const instagramURL = "https://www.instagram.com/projectlion.io/";
 
 const Header: FC = () => {
   const scrollLink = ["Story", "Roadmap", "Team"];
@@ -34,7 +34,7 @@ const Header: FC = () => {
       <Box fontWeight="bold" fontSize="lg" cursor="pointer">
         <Link href="/">
           <Image
-            w={200}
+            w={120}
             src={
               colorMode === "light"
                 ? `../images/${logoImage}`
@@ -66,12 +66,24 @@ const Header: FC = () => {
             <FaDiscord size={24} />
           </Button>
         </Link>
-        <Link href={instagramURL}>
+        <Link href="/ko/rewarding">
+          <Button
+            colorScheme="orange"
+            ml={1}
+          >REWARDING</Button>
+        </Link>
+        <Link href="/ko/minting">
+          <Button
+            ml={1}
+            colorScheme="red"
+          >MINTING</Button>
+        </Link>
+        {/* <Link href={instagramURL}>
           <Button variant="ghost" size={["xs", "xs", "sm"]}>
             <FaInstagram size={24} />
           </Button>
-        </Link>
-        <Box onClick={toggleColorMode}>
+        </Link> */}
+        {/* <Box onClick={toggleColorMode}>
           {colorMode === "light" ? (
             <Button variant="ghost" size={["xs", "xs", "sm"]}>
               <IoMoon size={24} />
@@ -81,17 +93,7 @@ const Header: FC = () => {
               <IoSunny size={24} />
             </Button>
           )}
-        </Box>
-        <Box>
-          <Link
-            href={router.asPath}
-            locale={router.locale === "en" ? "ko" : "en"}
-          >
-            <Button variant="ghost" size={["xs", "xs", "sm"]}>
-              {router.locale === "en" ? "EN" : "KO"}
-            </Button>
-          </Link>
-        </Box>
+        </Box> */}
       </Flex>
     </Flex>
   );

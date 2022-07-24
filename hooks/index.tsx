@@ -1,5 +1,5 @@
 import Caver, { Contract } from "caver-js";
-import { MINT_NFT_ABI, MINT_NFT_ADDRESS } from "caverConfig";
+import { MINT_NFT_ABI, MINT_NFT_ADDRESS, DGR_TOKEN_ABI, DGR_TOKEN_ADDRESS } from "caverConfig";
 import { useEffect, useRef, useState } from "react";
 
 export const useAccount = () => {
@@ -29,6 +29,9 @@ export const useCaver = () => {
   const [mintNFTContract, setmintNFTContract] = useState<Contract | undefined>(
     undefined
   );
+  const [dgrTokenContract, setDGRTokenContract] = useState<Contract | undefined>(
+    undefined
+  );
 
   useEffect(() => {
     if (window.klaytn) {
@@ -40,9 +43,11 @@ export const useCaver = () => {
     if (!caver) return;
 
     setmintNFTContract(caver.contract.create(MINT_NFT_ABI, MINT_NFT_ADDRESS));
+
+    setDGRTokenContract(caver.contract.create(DGR_TOKEN_ABI, DGR_TOKEN_ADDRESS));
   }, [caver]);
 
-  return { caver, mintNFTContract };
+  return { caver, mintNFTContract, dgrTokenContract };
 };
 
 export const useAnimate = () => {
