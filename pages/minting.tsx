@@ -28,9 +28,9 @@ const Minting: NextPage = () => {
   const { caver, mintNFTContract } = useCaver();
 
   const { colorMode } = useColorMode();
-  const [sliderValue, setSliderValue] = useState(50)
+  const [isSoldOut, setSoldOut] = useState<boolean>(false);
 
-  const MAX_MINT_AMOUNT = 10;   // 트랜젝션당 민팅 가능 최대 수량
+  const MAX_MINT_AMOUNT = 1;   // 트랜젝션당 민팅 가능 최대 수량
   const MAX_NFT_PUBLISH_AMOUNT = 100;  //  NFT 최대 발행 예정 수량
 
   const labelStyles = {
@@ -66,6 +66,8 @@ const Minting: NextPage = () => {
         .totalSupply()
         .call();
       setNFTCurrentCapacity(num1);
+      if(num1 >= nftMaxCapacity) setSoldOut(true);  // 민팅된 수량이 최대수량보다 같거나 많아지면 매진
+      else setSoldOut(false);
       const num2 = await mintNFTContract?.methods // 민팅 가격
         .viewPrice()
         .call();
@@ -91,6 +93,9 @@ const Minting: NextPage = () => {
             .totalSupply()
             .call();
           setNFTCurrentCapacity(num1);
+
+          if(num1 >= nftMaxCapacity) setSoldOut(true);  // 민팅된 수량이 최대수량보다 같거나 많아지면 매진
+          else setSoldOut(false);
         }
         fetchTotalNum();
       }, 1000);
@@ -136,6 +141,14 @@ const Minting: NextPage = () => {
         data: mintNFTContract?.methods.batchMintNFT(mintAmount).encodeABI(),
       });
 
+      if (response?.status) {
+        console.log(1);
+        console.log(response);
+      }
+      else{
+        console.log(2);
+        console.log(response);
+      }
       // if (response?.status) {
       //   const balanceOf = await mintNFTContract?.methods
       //     .balanceOf(account)
@@ -169,7 +182,7 @@ const Minting: NextPage = () => {
       console.error(error);
 
       setIsLoading(false);
-    }
+              }
   };
   
   // 민팅 수량 감소
@@ -185,9 +198,9 @@ const Minting: NextPage = () => {
       console.error(error);
 
       setIsLoading(false);
-    }
+            }
   };
-  
+
   // 민팅 수량 증가 (최대 : MAX_MINT_AMOUNT)
   const onClickAdd = async () => {
     try {
@@ -249,10 +262,10 @@ const Minting: NextPage = () => {
           // borderColor={colorMode === "light" ? "gray.300" : "gray.500"}
           // borderRadius="lg"
         >
-          <Image
+            <Image
             src="../images/utopia.png"
             alt="img"
-          />
+            />
         </Flex>
         <Flex direction="column" minH={700} minW={500}>
           {/* <Text>민팅 시작 블록 : {startBlockHeight}</Text>
@@ -264,7 +277,8 @@ const Minting: NextPage = () => {
           <Text>현재 상태 : {mintStatus}</Text> */}
           
           {/*********************************** 블록 정보 ***********************************/}
-          <br/><br/><br/>
+          
+          <br/><Heading fontSize='3xl'>{mintStatus}</Heading><br/><br/>
           <Heading fontSize='sm'>Minting Block Number</Heading>
           <br/>
           <Flex direction="row" minW={500}>
@@ -327,8 +341,8 @@ const Minting: NextPage = () => {
               <SliderMark value={0} {...labelStyles}>
                 0
               </SliderMark>
-              <SliderMark value={MAX_NFT_PUBLISH_AMOUNT/2} {...labelStyles}>
-                {MAX_NFT_PUBLISH_AMOUNT/2}
+              <SliderMark value={nftMaxCapacity} {...labelStyles}>
+                {nftMaxCapacity}
               </SliderMark>
               <SliderMark value={MAX_NFT_PUBLISH_AMOUNT} {...labelStyles}>
                 {MAX_NFT_PUBLISH_AMOUNT}
@@ -365,7 +379,7 @@ const Minting: NextPage = () => {
               -
             </Button>
             <Spacer />
-            <Text minW={140} textAlign="center">{mintAmount}</Text>
+            <Heading fontSize='3xl' textAlign="center">{mintAmount}</Heading>
             <Spacer />
             <Button
               size="md"
@@ -381,11 +395,11 @@ const Minting: NextPage = () => {
             size="lg"
             colorScheme="green"
             onClick={onClickMint}
-            disabled={account === "" || isLoading}
+            disabled={account === "" || isLoading || isSoldOut}
             isLoading={isLoading}
             loadingText="Loading ..."
           >
-            Minting
+            {isSoldOut?"Sold Out":"Minting"}
           </Button>
         </Flex>
       </Flex>
