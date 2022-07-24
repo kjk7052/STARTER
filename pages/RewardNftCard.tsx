@@ -11,7 +11,7 @@ interface TeamCardProps {
   animation: string;
 }
 
-const TeamCard: FC<TeamCardProps> = ({
+const RewardNFTCard: FC<TeamCardProps> = ({
   name,
   position,
   image,
@@ -51,4 +51,4 @@ const TeamCard: FC<TeamCardProps> = ({
   );
 };
 
-export default TeamCard;
+export default RewardNFTCard;

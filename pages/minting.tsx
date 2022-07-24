@@ -365,7 +365,7 @@ const Minting: NextPage = () => {
               -
             </Button>
             <Spacer />
-            <Text minW={140} textAlign="center">{mintAmount}</Text>
+            <Heading textAlign="center">{mintAmount}</Heading>
             <Spacer />
             <Button
               size="md"
