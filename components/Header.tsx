@@ -66,6 +66,18 @@ const Header: FC = () => {
             <FaDiscord size={24} />
           </Button>
         </Link>
+        <Link href="/ko/rewarding">
+          <Button
+            colorScheme="orange"
+            ml={1}
+          >REWARDING</Button>
+        </Link>
+        <Link href="/ko/minting">
+          <Button
+            ml={1}
+            colorScheme="red"
+          >MINTING</Button>
+        </Link>
         {/* <Link href={instagramURL}>
           <Button variant="ghost" size={["xs", "xs", "sm"]}>
             <FaInstagram size={24} />
