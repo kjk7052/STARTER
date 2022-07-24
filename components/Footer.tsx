@@ -3,8 +3,10 @@ import { FC } from "react";
 
 // @ 팀 주소 및 카피라이트에 관한 정보를 입력합니다.
 const contactInfo =
-  "Team ProjectLion NFT | 443, Teheran-ro, Gangnam-gu, Seoul, Republic of Korea | E-Mail h662@olbm.app";
-const copyRight = "COPYRIGHT © Team ProjectLion NFT. ALL RIGHT RESERVED";
+  "Team Project DollgRock NFT | LikeLion 3rd STARTER Class | E-Mail h662@olbm.app";
+  // "Team ProjectLion NFT | 443, Teheran-ro, Gangnam-gu, Seoul, Republic of Korea | E-Mail h662@olbm.app";
+const copyRight = "COPYRIGHT © Team Project DollgRock NFT. ALL RIGHT RESERVED";
+//const copyRight = "COPYRIGHT © Team ProjectLion NFT. ALL RIGHT RESERVED";
 
 const Footer: FC = () => {
   const { colorMode } = useColorMode();

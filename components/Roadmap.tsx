@@ -63,7 +63,7 @@ const roadmapCardConfig = [
   },
   {
     justifyContent: "end",
-    animation: "slideInLeft",
+    animation: "slideInRight",
     title: "roadmapTitle8",
     description: "roadmap8",
     color: "yellow",
