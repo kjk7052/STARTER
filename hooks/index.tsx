@@ -1,5 +1,5 @@
 import Caver, { Contract } from "caver-js";
-import { MINT_NFT_ABI, MINT_NFT_ADDRESS, DGR_TOKEN_ABI, DGR_TOKEN_ADDRESS } from "caverConfig";
+import { DOLLGROCK_NFT_ABI, DOLLGROCK_NFT_ADDRESS, JOYAKDOL_TOKEN_ABI, JOYAKDOL_TOKEN_ADDRESS } from "caverConfig";
 import { useEffect, useRef, useState } from "react";
 
 export const useAccount = () => {
@@ -26,10 +26,10 @@ export const useAccount = () => {
 
 export const useCaver = () => {
   const [caver, setCaver] = useState<Caver | undefined>(undefined);
-  const [mintNFTContract, setmintNFTContract] = useState<Contract | undefined>(
+  const [dollgrockNFTContract, setDollgrockNFTContract] = useState<Contract | undefined>(
     undefined
   );
-  const [dgrTokenContract, setDGRTokenContract] = useState<Contract | undefined>(
+  const [joyakdolTokenContract, setJoyakdolTokenContract] = useState<Contract | undefined>(
     undefined
   );
 
@@ -42,12 +42,12 @@ export const useCaver = () => {
   useEffect(() => {
     if (!caver) return;
 
-    setmintNFTContract(caver.contract.create(MINT_NFT_ABI, MINT_NFT_ADDRESS));
+    setDollgrockNFTContract(caver.contract.create(DOLLGROCK_NFT_ABI, DOLLGROCK_NFT_ADDRESS));
 
-    setDGRTokenContract(caver.contract.create(DGR_TOKEN_ABI, DGR_TOKEN_ADDRESS));
+    setJoyakdolTokenContract(caver.contract.create(JOYAKDOL_TOKEN_ABI, JOYAKDOL_TOKEN_ADDRESS));
   }, [caver]);
 
-  return { caver, mintNFTContract, dgrTokenContract };
+  return { caver, dollgrockNFTContract, joyakdolTokenContract };
 };
 
 export const useAnimate = () => {

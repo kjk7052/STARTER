@@ -1,8 +1,8 @@
 import { Box, Button, Flex, Image, Text, useColorMode, Spacer, Heading ,
   Slider, SliderTrack, SliderFilledTrack, SliderThumb, SliderMark,
-  Divider  } from "@chakra-ui/react";
+  Divider, useInterval  } from "@chakra-ui/react";
 import axios from "axios";
-import { MINT_NFT_ADDRESS } from "caverConfig";
+import { DOLLGROCK_NFT_ADDRESS } from "caverConfig";
 import { useCaver } from "hooks";
 import { NextPage } from "next";
 import { useTranslation } from "next-i18next";
@@ -13,117 +13,197 @@ import { useState } from "react";
 const Minting: NextPage = () => {
   const [account, setAccount] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [newNFT, setNewNFT] = useState<any>(undefined);
+  // const [newNFT, setNewNFT] = useState<any>(undefined);
 
   const [startBlockHeight, setStartBlock] = useState<number>(99999999);
-  const [endBlockHeight, setEndBlock] = useState<number>(99999999);
   const [currentBlockHeight, setCurrentBlock] = useState<number>(0);
   
   const [nftMaxCapacity, setNFTMaxCapacity] = useState<number>(0);
   const [nftCurrentCapacity, setNFTCurrentCapacity] = useState<number>(0);
   const [nftPrice, setNFTPrice] = useState<number>(0);
+  
+  const [limitPerTransaction, setLimitPerTransaction] = useState<number>(1);
+  const [limitPerWallet, setLimitPerWallet] = useState<number>(1);
   const [mintAmount, setMintAmount] = useState<number>(1);
   const [mintStatus, setMintStatus] = useState<string>("");
 
-  const { caver, mintNFTContract } = useCaver();
+  const { caver, dollgrockNFTContract } = useCaver();
 
   const { colorMode } = useColorMode();
   const [isSoldOut, setSoldOut] = useState<boolean>(false);
 
-  const MAX_MINT_AMOUNT = 1;   // 트랜젝션당 민팅 가능 최대 수량
   const MAX_NFT_PUBLISH_AMOUNT = 100;  //  NFT 최대 발행 예정 수량
-
-  const labelStyles = {
-    mt: '2',
-    ml: '-2.5',
-    fontSize: 'sm',
-  }
 
   const onClickKaikas = async () => {
     try {
       const accounts = await window.klaytn.enable();
       setAccount(accounts[0]);
-
-      ///////////////////////////////////////////////////////
-      const block1 = await mintNFTContract?.methods // 민팅 시작 블록
-        .viewMintStartBlockHeight()
-        .call();
-      setStartBlock(block1);
-      const block2 = await mintNFTContract?.methods // 민팅 종료 블록
-        .viewMintEndBlockHeight()
-        .call();
-      setEndBlock(block2);
-      const block3 = await mintNFTContract?.methods // 현재 블록
-        .viewCurrentBlockHeight()
-        .call();
-      setCurrentBlock(block3);
-
-      const num = await mintNFTContract?.methods  // NFT 최대수량
-        .viewMaxCapacity()
-        .call();
-      setNFTMaxCapacity(num);
-      const num1 = await mintNFTContract?.methods // 지금까지 발행된 NFT 수량
-        .totalSupply()
-        .call();
-      setNFTCurrentCapacity(num1);
-      if(num1 >= nftMaxCapacity) setSoldOut(true);  // 민팅된 수량이 최대수량보다 같거나 많아지면 매진
-      else setSoldOut(false);
-      const num2 = await mintNFTContract?.methods // 민팅 가격
-        .viewPrice()
-        .call();
-      setNFTPrice(num2);
-      const txt = await mintNFTContract?.methods  // 민팅 상태
-        .viewCurrentStage()
-        .call();
-      setMintStatus(txt);
-      ///////////////////////////////////////////////////////
-
     } catch (error) {
       console.error(error);
     }
   };
 
-  // 민팅된 수량 실시간 갱신
-  useEffect(() => {
-    if (account != "") {
-      // 1초 마다 갱신
-      setInterval(() => {
-        const fetchTotalNum = async () => {
-          const num1 = await mintNFTContract?.methods
-            .totalSupply()
-            .call();
-          setNFTCurrentCapacity(num1);
 
-          if(num1 >= nftMaxCapacity) setSoldOut(true);  // 민팅된 수량이 최대수량보다 같거나 많아지면 매진
-          else setSoldOut(false);
-        }
-        fetchTotalNum();
-      }, 1000);
-    } else {
-    }
-  }, [nftCurrentCapacity])
-
-  // 현재 블록 높이 실시간 갱신
   useEffect(() => {
-    if (account != "") {
-      // 0.1초 마다 갱신
-      setInterval(() => {
-        const fetchCurrentBlock = async () => {
-          const block = await mintNFTContract?.methods
-            .viewCurrentBlockHeight()
-            .call();
-            setCurrentBlock(block);
-        }
-        fetchCurrentBlock();
-      }, 100);
-    } else {
+    try {
+      refreshDataLongInterval();
+      console.log("Long Intaval Refresh");
+    } catch (error) {
+      console.error(error);
     }
-  }, [currentBlockHeight])
+  }, [account]);
+
+  // // 민팅된 수량 실시간 갱신
+  // useEffect(() => {
+  //   try {
+  //     if (account != "") {
+  //       // 1초 마다 갱신
+  //       setInterval(() => {
+  //         const fetchTotalNum = async () => {
+  //           const block1 = await dollgrockNFTContract?.methods // 민팅 시작 블록
+  //             .viewMintStartBlockHeight()
+  //             .call();
+  //           setStartBlock(block1);
+  //           const block3 = await dollgrockNFTContract?.methods // 현재 블록
+  //             .viewCurrentBlockHeight()
+  //             .call();
+  //           setCurrentBlock(block3);
+      
+  //           const limit1 = await dollgrockNFTContract?.methods  // 트랜젝션당 민팅 수량 제한
+  //             .viewLimitPerTransaction()
+  //             .call();
+  //           setLimitPerTransaction(limit1);
+  //           const limit2 = await dollgrockNFTContract?.methods  // 지갑당 민팅 수량 제한
+  //             .viewLimitPerWallet()
+  //             .call();
+  //           setLimitPerWallet(limit2);
+      
+  //           const nftCap = await dollgrockNFTContract?.methods  // NFT 최대수량
+  //             .viewMaxCapacity()
+  //             .call();
+  //           setNFTMaxCapacity(nftCap);
+  //           const num1 = await dollgrockNFTContract?.methods // 지금까지 발행된 NFT 수량
+  //             .totalSupply()
+  //             .call();
+  //           setNFTCurrentCapacity(num1);
+  //           if(num1 >= nftMaxCapacity) setSoldOut(true);  // 민팅된 수량이 최대수량보다 같거나 많아지면 매진
+  //           else setSoldOut(false);
+  //           const price = await dollgrockNFTContract?.methods // 민팅 가격
+  //             .viewPrice()
+  //             .call();
+  //           setNFTPrice(price);
+  //           const stat = await dollgrockNFTContract?.methods  // 민팅 상태
+  //             .viewCurrentStage()
+  //             .call();
+      
+  //           if(stat == 0) setMintStatus("Not Minting Now");
+  //           else if(stat == 1) setMintStatus("WhiteList Minting");
+  //           else if(stat == 2) setMintStatus("WhiteList Minting 2");
+  //           else if(stat == 3) setMintStatus("Public Minting");
+  //           else setMintStatus("");
+  //         }
+  //         fetchTotalNum();
+  //       }, 1000);
+  //     } else {
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // }, [])
+
+  useInterval(()=>{
+    refreshDataMidiumInterval();
+    // console.log("Midium Intaval Refresh");
+  },1000);
+
+  useInterval(()=>{
+    refreshDataShortInterval();
+    // console.log("Short Intaval Refresh");
+  },300);
+
+
+
+  // 긴 주기로 데이터 갱신
+  const refreshDataLongInterval = async() =>
+  {
+    const block1 = await dollgrockNFTContract?.methods // 민팅 시작 블록
+      .viewMintStartBlockHeight()
+      .call();
+    setStartBlock(block1);
+
+    const limit1 = await dollgrockNFTContract?.methods  // 트랜젝션당 민팅 수량 제한
+      .viewLimitPerTransaction()
+      .call();
+    setLimitPerTransaction(limit1);
+    const limit2 = await dollgrockNFTContract?.methods  // 지갑당 민팅 수량 제한
+      .viewLimitPerWallet()
+      .call();
+    setLimitPerWallet(limit2);
+
+    const nftCap = await dollgrockNFTContract?.methods  // NFT 최대수량
+      .viewMaxCapacity()
+      .call();
+    setNFTMaxCapacity(nftCap);
+    const price = await dollgrockNFTContract?.methods // 민팅 가격
+      .viewPrice()
+      .call();
+    setNFTPrice(price);
+    const stat = await dollgrockNFTContract?.methods  // 민팅 상태
+      .viewCurrentStage()
+      .call();
+
+    if(stat == 0) setMintStatus("Not Minting Now");
+    else if(stat == 1) setMintStatus("WhiteList Minting");
+    else if(stat == 2) setMintStatus("WhiteList Minting 2");
+    else if(stat == 3) setMintStatus("Public Minting");
+    else setMintStatus("");
+  }
+
+  // 중간 주기로 데이터 갱신
+  const refreshDataMidiumInterval = async() =>
+  {
+    const num1 = await dollgrockNFTContract?.methods // 지금까지 발행된 NFT 수량
+      .totalSupply()
+      .call();
+    setNFTCurrentCapacity(num1);
+    if(num1 >= nftMaxCapacity) setSoldOut(true);  // 민팅된 수량이 최대수량보다 같거나 많아지면 매진
+    else setSoldOut(false);
+  }
+
+  // 짧은 주기로 데이터 갱신
+  const refreshDataShortInterval = async() =>
+  {
+    const block3 = await dollgrockNFTContract?.methods // 현재 블록
+      .viewCurrentBlockHeight()
+      .call();
+    setCurrentBlock(block3);
+  }
+
+  // // 현재 블록 높이 실시간 갱신
+  // useEffect(() => {
+  //   try {
+  //     if (account != "") {
+  //       // 0.1초 마다 갱신
+  //       setInterval(() => {
+  //         const fetchCurrentBlock = async () => {
+  //           const block = await dollgrockNFTContract?.methods
+  //             .viewCurrentBlockHeight()
+  //             .call();
+  //             setCurrentBlock(block);
+  //         }
+  //         fetchCurrentBlock();
+  //       }, 100);
+  //     } else {
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // }, [currentBlockHeight])
 
   // 선택된 수량만큼 NFT 민팅
   const onClickMint = async () => {
     try {
-      // const response = await mintNFTContract?.methods.mintNFT().send({
+      // const response = await dollgrockNFTContract?.methods.mintNFT().send({
       //   from: account,
       //   value: caver?.utils.convertToPeb(2, "KLAY"),
       //   gas: 3000000,
@@ -135,10 +215,10 @@ const Minting: NextPage = () => {
       const response = await caver?.klay.sendTransaction({
         type: "SMART_CONTRACT_EXECUTION",
         from: account,
-        to: MINT_NFT_ADDRESS,
+        to: DOLLGROCK_NFT_ADDRESS,
         value: caver.utils.convertToPeb(nftPrice * mintAmount, "KLAY"),
         gas: 3000000,
-        data: mintNFTContract?.methods.batchMintNFT(mintAmount).encodeABI(),
+        data: dollgrockNFTContract?.methods.batchMintNFT(mintAmount).encodeABI(),
       });
 
       if (response?.status) {
@@ -150,17 +230,17 @@ const Minting: NextPage = () => {
         console.log(response);
       }
       // if (response?.status) {
-      //   const balanceOf = await mintNFTContract?.methods
+      //   const balanceOf = await dollgrockNFTContract?.methods
       //     .balanceOf(account)
       //     .call();
 
       //   if (balanceOf) {
-      //     const myNewNFT = await mintNFTContract?.methods
+      //     const myNewNFT = await dollgrockNFTContract?.methods
       //       .tokenOfOwnerByIndex(account, balanceOf - 1)
       //       .call();
 
       //     if (myNewNFT) {
-      //       const tokenURI = await mintNFTContract?.methods
+      //       const tokenURI = await dollgrockNFTContract?.methods
       //         .tokenURI(myNewNFT)
       //         .call();
 
@@ -175,7 +255,7 @@ const Minting: NextPage = () => {
       //   }
       // }
 
-      // const blockNumber = await mintNFTContract?.methods.viewCurrentBlockNumber().call();
+      // const blockNumber = await dollgrockNFTContract?.methods.viewCurrentBlockNumber().call();
 
       setIsLoading(false);
     } catch (error) {
@@ -206,8 +286,8 @@ const Minting: NextPage = () => {
     try {
       setIsLoading(true);
 
-      if(mintAmount < MAX_MINT_AMOUNT) setMintAmount(mintAmount+1);
-      else setMintAmount(MAX_MINT_AMOUNT);  // 예기치 않은 오류로 더 큰 값이 들어가 있더라도 최대치로 초기화
+      if(mintAmount < limitPerTransaction) setMintAmount(mintAmount+1);
+      else setMintAmount(limitPerTransaction);  // 예기치 않은 오류로 더 큰 값이 들어가 있더라도 최대치로 초기화
 
       setIsLoading(false);
     } catch (error) {
@@ -216,6 +296,13 @@ const Minting: NextPage = () => {
       setIsLoading(false);
     }
   };
+  
+
+  const labelStyles = {
+    mt: '2',
+    ml: '-2.5',
+    fontSize: 'sm',
+  }
 
   return (
     <Flex
@@ -316,7 +403,7 @@ const Minting: NextPage = () => {
               <Text fontSize='sm'>Per Transaction</Text>
               <Flex direction="row" alignItems="center">
                 <Text fontSize='xs'>최대</Text>
-                <Heading  fontSize='lg' ml={1}>{MAX_MINT_AMOUNT}개</Heading >
+                <Heading  fontSize='lg' ml={1}>{limitPerTransaction}개</Heading >
               </Flex>
             </Flex>
             <Spacer/>
@@ -324,7 +411,10 @@ const Minting: NextPage = () => {
             <Spacer/>
             <Flex direction="column">
               <Text fontSize='sm'>Per Wallet</Text>
-              <Heading  fontSize='md'>Unlimited</Heading >
+              <Flex direction="row" alignItems="center">
+                <Text fontSize='xs'>최대</Text>
+                <Heading  fontSize='lg' ml={1}>{limitPerWallet}개</Heading >
+              </Flex>
             </Flex>
           </Flex>
           <br/>
