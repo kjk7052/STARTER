@@ -6,42 +6,42 @@ import TeamCard from "./TeamCard";
 // @ name: 팀원 이름, position: 포지션, image: public/images에 있는 이미지 이름, color: color 이름 (모든 색상이 가능하지는 않습니다.)
 const teamCardConfig = [
   {
-    name: "정빛나",
+    name: "JBN",
     position: "기획 및 아트웍",
     image: "team/정빛나님.png",
     color: "pink",
     animation: "pulse",
   },
   {
-    name: "한승종",
+    name: "HSJ",
     position: "기획",
     image: "team/한승종님.png",
     color: "yellow",
     animation: "pulse",
   },
   {
-    name: "이영기",
+    name: "LYG",
     position: "기획",
     image: "team/이영기님.png",
     color: "red",
     animation: "pulse",
   },
   {
-    name: "김중건",
+    name: "KJK",
     position: "개발",
     image: "team/김중건님.png",
     color: "purple",
     animation: "pulse",
   },
   {
-    name: "권오정",
+    name: "KOJ",
     position: "개발",
     image: "team/권오정님.png",
     color: "blue",
     animation: "pulse",
   },
   {
-    name: "김백승",
+    name: "KBS",
     position: "개발",
     image: "team/김백승님.png",
     color: "green",
